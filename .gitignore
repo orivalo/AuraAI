@@ -108,6 +108,17 @@ Desktop.ini
 *.pfx
 
 # ============================================
+# Documentation & Instructions
+# ============================================
+README.md
+README-*.md
+QUICK-START.md
+PROJECT-REPORT.md
+SECURITY-AUDIT.md
+*.md
+!LICENSE
+
+# ============================================
 # Misc
 # ============================================
 *.pid
