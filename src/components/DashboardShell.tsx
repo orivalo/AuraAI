@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
-import { Brain, Target, LogOut, MessageSquare, Menu, X, Activity } from "lucide-react";
+import { Brain, Target, LogOut, MessageSquare, Menu, X, Activity, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
@@ -227,6 +227,43 @@ export default function DashboardShell() {
     setIsMobileMenuOpen(false); // Закрываем сайдбар на мобильных
     if (userId) {
       localStorage.removeItem(`aura_chat_id_${userId}`);
+    }
+  };
+
+  // Удаление чата
+  const handleDeleteChat = async (chatIdToDelete: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Предотвращаем открытие чата при клике на кнопку удаления
+    
+    if (!userId) return;
+
+    try {
+      const response = await fetch("/api/chat/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          chatId: chatIdToDelete,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Ошибка при удалении чата");
+      }
+
+      // Если удаляемый чат был активным, очищаем его
+      if (chatId === chatIdToDelete) {
+        setChatId(null);
+        setMessages([]);
+        if (userId) {
+          localStorage.removeItem(`aura_chat_id_${userId}`);
+        }
+      }
+
+      // Обновляем список чатов
+      loadChats(userId);
+    } catch (error) {
+      console.error("Ошибка при удалении чата:", error);
     }
   };
 
@@ -491,24 +528,35 @@ export default function DashboardShell() {
                     <span className="text-xs font-medium truncate">{t("chats.newChat")}</span>
                   </button>
                   {chats.map((chat) => (
-                    <button
+                    <div
                       key={chat.id}
-                      onClick={() => loadChatMessages(chat.id)}
                       className={cn(
-                        "w-full flex flex-col gap-1 px-3 py-2 rounded-2xl transition-all duration-200 text-left",
+                        "w-full flex items-center gap-2 px-3 py-2 rounded-2xl transition-all duration-200 group",
                         chatId === chat.id
                           ? "bg-white/80 text-[#7C9070] shadow-sm"
                           : "text-[#7C9070]/70 hover:bg-white/60 hover:text-[#7C9070]"
                       )}
                     >
-                      <span className="text-xs font-medium truncate">{chat.preview}</span>
-                      <span className="text-[10px] text-[#A4B494]/50">
-                        {new Date(chat.created_at).toLocaleDateString(language === "ru" ? "ru-RU" : "en-US", {
-                          day: "numeric",
-                          month: "short",
-                        })}
-                      </span>
-                    </button>
+                      <button
+                        onClick={() => loadChatMessages(chat.id)}
+                        className="flex-1 flex flex-col gap-1 text-left min-w-0"
+                      >
+                        <span className="text-xs font-medium truncate">{chat.preview}</span>
+                        <span className="text-[10px] text-[#A4B494]/50">
+                          {new Date(chat.created_at).toLocaleDateString(language === "ru" ? "ru-RU" : "en-US", {
+                            day: "numeric",
+                            month: "short",
+                          })}
+                        </span>
+                      </button>
+                      <button
+                        onClick={(e) => handleDeleteChat(chat.id, e)}
+                        className="p-1.5 rounded-xl text-[#A4B494]/50 hover:text-red-500 hover:bg-red-50 transition-all duration-200 opacity-0 group-hover:opacity-100 flex-shrink-0"
+                        aria-label="Delete chat"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   ))}
                 </>
               )}

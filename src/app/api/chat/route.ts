@@ -204,7 +204,9 @@ export async function POST(request: NextRequest) {
     // Формируем системный промпт с учетом языка интерфейса
     const systemPromptWithLanguage = `${SYSTEM_PROMPT}
 
-Current interface language: ${languageName}. Respond to the user in the language they use, but keep all system summaries and interface elements in ${languageName}.`;
+ВАЖНО: Отвечай СТРОГО на ${languageName === "Russian" ? "русском" : "английском"} языке. Игнорируй язык предыдущих сообщений, если он отличается от выбранного языка интерфейса. Всегда используй ${languageName === "Russian" ? "русский" : "английский"} язык для ответов, независимо от языка входящих сообщений.
+
+IMPORTANT: Respond STRICTLY in ${languageName} language. Ignore the language of previous messages if it differs from the selected interface language. Always use ${languageName} language for responses, regardless of the language of incoming messages.`;
     
     // Prepare messages for Groq (sanitize all messages)
     const groqMessages = [

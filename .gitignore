@@ -18,6 +18,7 @@ next-env.d.ts
 # Documentation and Reports (Hiding all instructions)
 *.md
 !LICENSE
+!README.md
 /supabase/
 
 # System and IDE files
