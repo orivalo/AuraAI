@@ -1,0 +1,26 @@
+{
+  "name": "Aura AI",
+  "short_name": "Aura",
+  "description": "Your personal wellness companion powered by AI",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#7C9070",
+  "theme_color": "#7C9070",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["health", "lifestyle", "productivity"]
+}
+
