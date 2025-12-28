@@ -216,7 +216,7 @@ Current interface language: ${languageName}. Generate all tasks in ${languageNam
     let tasksArray: string[] = [];
     try {
       // Пытаемся найти JSON массив в ответе
-      const jsonMatch = responseText.match(/\[.*\]/s);
+      const jsonMatch = responseText.match(/\[[\s\S]*\]/);
       if (jsonMatch) {
         tasksArray = JSON.parse(jsonMatch[0]);
       } else {
