@@ -1,129 +1,32 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# ============================================
 # Dependencies
-# ============================================
 node_modules/
-.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
 
-# ============================================
-# Build outputs
-# ============================================
+# Next.js Build Outputs
 .next/
 out/
 build/
 dist/
-*.tsbuildinfo
 next-env.d.ts
+*.tsbuildinfo
 
-# ============================================
-# Environment variables & secrets
-# ============================================
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env*.local
+# Secrets and Environment Variables
+.env*
 
-# ============================================
-# Logs
-# ============================================
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-*.log
-
-# ============================================
-# Testing
-# ============================================
-coverage/
-.nyc_output/
-*.lcov
-
-# ============================================
-# IDE & Editor files
-# ============================================
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.project
-.classpath
-.settings/
-*.sublime-project
-*.sublime-workspace
-
-# ============================================
-# OS files
-# ============================================
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-Desktop.ini
-
-# ============================================
-# Deployment & Hosting
-# ============================================
-.vercel
-.netlify
-.railway
-.firebase
-.serverless/
-
-# ============================================
-# Temporary files
-# ============================================
-*.tmp
-*.temp
-*.cache
-.cache/
-.turbo/
-.parcel-cache/
-
-# ============================================
-# Security & Certificates
-# ============================================
-*.pem
-*.key
-*.cert
-*.crt
-*.p12
-*.pfx
-
-# ============================================
-# Documentation & Instructions
-# ============================================
-README.md
-README-*.md
-QUICK-START.md
-PROJECT-REPORT.md
-SECURITY-AUDIT.md
+# Documentation and Reports (Hiding all instructions)
 *.md
 !LICENSE
+supabase/
 
-# ============================================
-# Misc
-# ============================================
-*.pid
-*.seed
-*.pid.lock
-.npm
-.eslintcache
-.stylelintcache
+# System and IDE files
+.DS_Store
+.vscode/
+.idea/
+*.log
+.vercel
+
+# Temporary files
+*.tmp
+*.temp
