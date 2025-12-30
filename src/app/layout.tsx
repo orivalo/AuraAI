@@ -23,16 +23,26 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "Aura AI",
   },
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#7C9070" },
+    { media: "(prefers-color-scheme: dark)", color: "#7C9070" },
+  ],
   formatDetection: {
     telephone: false,
   },
   icons: {
-    icon: "/icon-192.png",
-    apple: "/icon-192.png",
+    icon: [
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
   },
   other: {
     "apple-mobile-web-app-capable": "yes",
     "apple-mobile-web-app-status-bar-style": "default",
+    "apple-mobile-web-app-title": "Aura AI",
   },
 };
 
@@ -43,6 +53,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
+  colorScheme: "light",
 };
 
 export default function RootLayout({

@@ -126,6 +126,11 @@
   body {
     background-color: var(--color-sage-background);
     @apply text-foreground;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  
+  html {
+    background-color: var(--color-sage-background);
   }
 }
 

@@ -18,6 +18,7 @@ const translations = {
     "nav.myMind": "My Mind",
     "nav.dailyGoals": "Daily Goals",
     "nav.signOut": "Sign Out",
+    "nav.deleteAccount": "Delete Account",
     
     // Chat
     "chat.placeholder": "Write a message...",
@@ -73,12 +74,20 @@ const translations = {
     "auth.terms": "By signing in, you agree to our Terms of Service and Privacy Policy",
     "auth.error": "An error occurred. Please try again.",
     "auth.loginError": "Login error. Please try again.",
+    
+    // Account
+    "account.deleteTitle": "Delete Account",
+    "account.deleteWarning": "Are you sure you want to delete your account? This action is irreversible and will permanently delete all your data, including chats, tasks, and mood entries.",
+    "account.confirmDelete": "Delete",
+    "account.cancel": "Cancel",
+    "account.deleting": "Deleting...",
   },
   ru: {
     // Navigation
     "nav.myMind": "Мой разум",
     "nav.dailyGoals": "Цели дня",
     "nav.signOut": "Выйти",
+    "nav.deleteAccount": "Удалить аккаунт",
     
     // Chat
     "chat.placeholder": "Напишите сообщение...",
@@ -134,6 +143,13 @@ const translations = {
     "auth.terms": "Войдя, вы соглашаетесь с условиями использования и политикой конфиденциальности",
     "auth.error": "Произошла ошибка. Попробуйте еще раз.",
     "auth.loginError": "Ошибка при входе. Попробуйте еще раз.",
+    
+    // Account
+    "account.deleteTitle": "Удалить аккаунт",
+    "account.deleteWarning": "Вы уверены, что хотите удалить свой аккаунт? Это действие необратимо и навсегда удалит все ваши данные, включая чаты, задачи и записи настроения.",
+    "account.confirmDelete": "Удалить",
+    "account.cancel": "Отмена",
+    "account.deleting": "Удаление...",
   },
 };
 

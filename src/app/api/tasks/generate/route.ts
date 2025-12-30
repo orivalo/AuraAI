@@ -8,7 +8,21 @@ const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
-const TASKS_GENERATION_PROMPT = `Ты персональный помощник, который создает мотивирующие и реалистичные задачи на день.
+const TASKS_GENERATION_PROMPT_EN = `You are a personal assistant that creates motivating and realistic daily tasks.
+
+Based on the user's mood analysis and conversation context, create 3-5 personalized tasks for today. Tasks should be:
+- Specific and achievable
+- Suitable for the user's current emotional state
+- Motivating and supportive
+- Realistic in scope
+
+Return ONLY a JSON array of strings, without additional explanations:
+["Task 1", "Task 2", "Task 3"]
+
+Example response:
+["Take a 20-minute walk in the fresh air", "Drink a glass of water and take a 5-minute break", "Write down 3 things I'm grateful for today"]`;
+
+const TASKS_GENERATION_PROMPT_RU = `Ты персональный помощник, который создает мотивирующие и реалистичные задачи на день.
 
 На основе анализа настроения пользователя и контекста его общения, создай 3-5 персональных задач на сегодня. Задачи должны быть:
 - Конкретными и выполнимыми
@@ -159,28 +173,62 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Выбираем базовый промпт в зависимости от языка
+    const basePrompt = language === "ru" ? TASKS_GENERATION_PROMPT_RU : TASKS_GENERATION_PROMPT_EN;
+    
     // Формируем контекст для AI
+    const moodLabel = language === "ru" ? "Настроение" : "Mood";
+    const noMoodData = language === "ru" ? "Нет данных о настроении" : "No mood data";
+    const noChatMessages = language === "ru" ? "Нет сообщений в чате" : "No chat messages";
+    const userLabel = language === "ru" ? "Пользователь" : "User";
+    const assistantLabel = language === "ru" ? "Ассистент" : "Assistant";
+    const contextLabel = language === "ru" ? "Контекст пользователя" : "User context";
+    const moodEntriesLabel = language === "ru" ? "Последние записи настроения" : "Recent mood entries";
+    const chatMessagesLabel = language === "ru" ? "Последние сообщения из чата" : "Recent chat messages";
+    const createTasksLabel = language === "ru" ? "На основе этого контекста создай персональные задачи на сегодня." : "Based on this context, create personalized tasks for today.";
+    
     const moodSummary = moodEntries
       ? moodEntries
           .reverse()
-          .map((m) => `Настроение: ${m.score}/10 (${m.created_at})`)
+          .map((m) => `${moodLabel}: ${m.score}/10 (${m.created_at})`)
           .join("\n")
-      : "Нет данных о настроении";
+      : noMoodData;
 
-    const contextPrompt = `Контекст пользователя:
+    const formattedChatContext = chatContext
+      ? chatContext
+          .split("\n")
+          .map((line) => {
+            if (line.startsWith("Пользователь:")) {
+              return line.replace("Пользователь:", `${userLabel}:`);
+            }
+            if (line.startsWith("Ассистент:")) {
+              return line.replace("Ассистент:", `${assistantLabel}:`);
+            }
+            return line;
+          })
+          .join("\n")
+      : "";
 
-Последние записи настроения:
+    const contextPrompt = `${contextLabel}:
+
+${moodEntriesLabel}:
 ${moodSummary}
 
-Последние сообщения из чата:
-${chatContext || "Нет сообщений в чате"}
+${chatMessagesLabel}:
+${formattedChatContext || noChatMessages}
 
-На основе этого контекста создай персональные задачи на сегодня.`;
+${createTasksLabel}`;
 
-    // Формируем промпт с учетом языка интерфейса
-    const tasksPromptWithLanguage = `${TASKS_GENERATION_PROMPT}
+    // Формируем промпт с жесткой инструкцией по языку
+    const languageInstruction = language === "ru" 
+      ? `ВАЖНО: Генерируй задачи СТРОГО на русском языке. Игнорируй язык предыдущих сообщений, если он отличается. Всегда используй русский язык для всех задач.`
+      : `IMPORTANT: Generate tasks STRICTLY in English language. Ignore the language of previous messages if it differs. Always use English language for all tasks.`;
 
-Current interface language: ${languageName}. Generate all tasks in ${languageName}.`;
+    const tasksPromptWithLanguage = `${basePrompt}
+
+${languageInstruction}
+
+Current interface language: ${languageName}. Generate all tasks STRICTLY in ${languageName} language.`;
     
     // Генерируем задачи через Groq
     const completion = await groq.chat.completions.create({

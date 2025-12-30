@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
-import { Brain, Target, LogOut, MessageSquare, Menu, X, Activity, Trash2 } from "lucide-react";
+import { Brain, Target, LogOut, MessageSquare, Menu, X, Activity, Trash2, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
@@ -78,6 +78,8 @@ export default function DashboardShell() {
   const [isLoadingChats, setIsLoadingChats] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMoodDrawerOpen, setIsMoodDrawerOpen] = useState(false);
+  const [isDeleteAccountModalOpen, setIsDeleteAccountModalOpen] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -264,6 +266,34 @@ export default function DashboardShell() {
       loadChats(userId);
     } catch (error) {
       console.error("Ошибка при удалении чата:", error);
+    }
+  };
+
+  // Удаление аккаунта
+  const handleDeleteAccount = async () => {
+    if (!userId) return;
+
+    try {
+      setIsDeletingAccount(true);
+      const response = await fetch("/api/account/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Ошибка при удалении аккаунта");
+      }
+
+      // Выходим из аккаунта и перенаправляем на страницу входа
+      await supabase.auth.signOut();
+      router.push("/login");
+    } catch (error: any) {
+      console.error("Ошибка при удалении аккаунта:", error);
+      alert(error.message || "Не удалось удалить аккаунт. Попробуйте позже.");
+      setIsDeletingAccount(false);
     }
   };
 
@@ -551,7 +581,7 @@ export default function DashboardShell() {
                       </button>
                       <button
                         onClick={(e) => handleDeleteChat(chat.id, e)}
-                        className="p-1.5 rounded-xl text-[#A4B494]/50 hover:text-red-500 hover:bg-red-50 transition-all duration-200 opacity-0 group-hover:opacity-100 flex-shrink-0"
+                        className="p-1.5 rounded-xl text-[#A4B494]/50 hover:text-red-500 hover:bg-red-50 transition-all duration-200 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 flex-shrink-0"
                         aria-label="Delete chat"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -586,8 +616,56 @@ export default function DashboardShell() {
             <LogOut className="w-5 h-5" />
             <span className="text-sm font-medium">{t("nav.signOut")}</span>
           </button>
+          <button
+            onClick={() => setIsDeleteAccountModalOpen(true)}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-3xl text-red-500/70 hover:bg-red-50 hover:text-red-600 transition-all duration-300 mt-2"
+          >
+            <Trash2 className="w-5 h-5" />
+            <span className="text-sm font-medium">{t("nav.deleteAccount")}</span>
+          </button>
         </div>
       </aside>
+
+      {/* Delete Account Modal */}
+      {isDeleteAccountModalOpen && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/50 z-[100]"
+            onClick={() => !isDeletingAccount && setIsDeleteAccountModalOpen(false)}
+          />
+          <div className="fixed inset-0 z-[101] flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 rounded-2xl bg-red-100">
+                  <AlertTriangle className="w-6 h-6 text-red-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-[#7C9070]">
+                  {t("account.deleteTitle")}
+                </h3>
+              </div>
+              <p className="text-sm text-[#A4B494]/70 mb-6">
+                {t("account.deleteWarning")}
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setIsDeleteAccountModalOpen(false)}
+                  disabled={isDeletingAccount}
+                  className="flex-1 px-4 py-3 rounded-2xl text-sm font-medium text-[#7C9070] bg-[#F1F4F0] hover:bg-[#A4B494]/20 transition-colors disabled:opacity-50"
+                >
+                  {t("account.cancel")}
+                </button>
+                <button
+                  onClick={handleDeleteAccount}
+                  disabled={isDeletingAccount}
+                  className="flex-1 px-4 py-3 rounded-2xl text-sm font-medium text-white bg-red-500 hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isDeletingAccount ? t("account.deleting") : t("account.confirmDelete")}
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Main Content */}
       <main className="flex-1 flex overflow-hidden p-4 lg:p-8 gap-4 lg:gap-8 min-w-0">

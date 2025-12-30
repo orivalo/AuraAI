@@ -4,7 +4,7 @@
   "description": "Your personal wellness companion powered by AI",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#7C9070",
+  "background_color": "#F1F4F0",
   "theme_color": "#7C9070",
   "orientation": "portrait-primary",
   "icons": [
