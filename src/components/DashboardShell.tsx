@@ -441,6 +441,14 @@ export default function DashboardShell() {
             {activeItem === "chat" ? t("nav.myMind") : t("nav.dailyGoals")}
           </h2>
           <div className="flex items-center gap-2">
+            {/* User Avatar - Mobile */}
+            {userEmail && (
+              <div className="w-8 h-8 rounded-full bg-[#7C9070] flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-semibold text-xs">
+                  {userEmail.charAt(0).toUpperCase()}
+                </span>
+              </div>
+            )}
             <button
               onClick={() => setIsMoodDrawerOpen(true)}
               className="p-2 rounded-2xl bg-white/60 border border-[#A4B494]/20 text-[#7C9070] shadow-sm"
@@ -502,8 +510,35 @@ export default function DashboardShell() {
             : "fixed inset-y-0 left-0 z-50 -translate-x-full"
         )}
       >
+        {/* User Profile Header */}
+        <div 
+          className="p-4 flex-shrink-0"
+          style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top, 0px))' }}
+        >
+          <div className="flex items-center gap-3">
+            {/* Avatar */}
+            <div className="w-12 h-12 rounded-full bg-[#7C9070] flex items-center justify-center flex-shrink-0">
+              <span className="text-white font-semibold text-lg">
+                {userEmail ? userEmail.charAt(0).toUpperCase() : 'U'}
+              </span>
+            </div>
+            {/* User Info */}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-[#7C9070] truncate">
+                {userEmail ? userEmail.split('@')[0] : 'User'}
+              </p>
+              <p className="text-xs text-[#A4B494]/70 truncate">
+                {userEmail || ''}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Divider after profile */}
+        <div className="border-t border-[#7C9070]/20 mx-4" />
+
         {/* Navigation Buttons */}
-        <nav className="p-4 space-y-2 lg:safe-area-inset-top">
+        <nav className="p-4 space-y-2">
           {/* Language Switcher - Hidden on mobile (shown in top bar) */}
           <div className="hidden lg:flex items-center justify-between mb-2">
             <div className="flex-1" />
@@ -528,9 +563,6 @@ export default function DashboardShell() {
             </button>
           ))}
         </nav>
-
-        {/* Divider */}
-        <div className="border-t border-[#A4B494]/10 mx-4" />
 
         {/* Chats List - Always visible */}
         <div className="flex-1 flex flex-col min-h-0 relative">
@@ -599,15 +631,9 @@ export default function DashboardShell() {
 
         {/* User Info & Logout - Fixed at bottom */}
         <div 
-          className="p-4 border-t border-[#A4B494]/10 flex-shrink-0 bg-white/40"
+          className="p-4 border-t border-[#7C9070]/20 flex-shrink-0 bg-white/40"
           style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom, 0px))' }}
         >
-          {/* Email - Hidden on mobile to avoid overlap with input */}
-          {userEmail && (
-            <div className="hidden lg:block mb-3 px-4 py-2 text-xs text-[#7C9070]/70 truncate">
-              {userEmail}
-            </div>
-          )}
           <button
             onClick={async () => {
               await supabase.auth.signOut();
