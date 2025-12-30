@@ -535,6 +535,20 @@ export default function DashboardShell() {
         {/* Chats List - Always visible */}
         <div className="flex-1 flex flex-col min-h-0 relative">
             <div className="flex-1 overflow-y-auto px-2 py-3 space-y-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              {/* New Chat Button - Always visible */}
+              <button
+                onClick={handleNewChat}
+                className={cn(
+                  "w-full flex items-center gap-2 px-3 py-2 rounded-2xl transition-all duration-200 text-left mb-2",
+                  !chatId
+                    ? "bg-white/80 text-[#7C9070] shadow-sm"
+                    : "text-[#7C9070]/70 hover:bg-white/60 hover:text-[#7C9070]"
+                )}
+              >
+                <MessageSquare className="w-4 h-4 flex-shrink-0" />
+                <span className="text-xs font-medium truncate">{t("chats.newChat")}</span>
+              </button>
+              
               {isLoadingChats ? (
                 <div className="flex items-center justify-center py-8">
                   <div className="w-5 h-5 border-2 border-[#A4B494]/30 border-t-[#7C9070] rounded-full animate-spin" />
@@ -545,18 +559,6 @@ export default function DashboardShell() {
                 </div>
               ) : (
                 <>
-                  <button
-                    onClick={handleNewChat}
-                    className={cn(
-                      "w-full flex items-center gap-2 px-3 py-2 rounded-2xl transition-all duration-200 text-left",
-                      !chatId
-                        ? "bg-white/80 text-[#7C9070] shadow-sm"
-                        : "text-[#7C9070]/70 hover:bg-white/60 hover:text-[#7C9070]"
-                    )}
-                  >
-                    <MessageSquare className="w-4 h-4 flex-shrink-0" />
-                    <span className="text-xs font-medium truncate">{t("chats.newChat")}</span>
-                  </button>
                   {chats.map((chat) => (
                     <div
                       key={chat.id}
@@ -679,7 +681,13 @@ export default function DashboardShell() {
               </div>
 
               {/* Chat Messages - scrollable area */}
-              <div className="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4 min-h-0">
+              <div 
+                className="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4 min-h-0"
+                style={{ 
+                  paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px) + 30px)',
+                  overscrollBehavior: 'none'
+                }}
+              >
                 {messages.length === 0 && (
                   <div className="flex items-center justify-center h-full">
                     <p className="text-[#A4B494]/60 text-sm">{t("chat.empty")}</p>

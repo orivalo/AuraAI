@@ -123,10 +123,14 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html, body {
+    height: 100%;
+    height: -webkit-fill-available;
+  }
   body {
     background-color: var(--color-sage-background);
     @apply text-foreground;
-    padding-bottom: env(safe-area-inset-bottom, 0);
+    overscroll-behavior: none;
   }
   
   html {
